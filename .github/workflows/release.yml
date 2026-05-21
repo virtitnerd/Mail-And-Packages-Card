@@ -29,7 +29,8 @@ jobs:
       - name: Inject release version
         run: |
           VERSION="${{ github.event.release.tag_name }}"
-          sed -i "s/0\.0\.0-dev/${VERSION}/g" dist/Home-Assistant-Mail-And-Packages-Custom-Card.js
+          CLEAN_VERSION="${VERSION#v}"
+          sed -i "s/0\.0\.0-dev/${CLEAN_VERSION}/g" dist/Home-Assistant-Mail-And-Packages-Custom-Card.js
 
       - name: Upload JS to release
         uses: softprops/action-gh-release@v2

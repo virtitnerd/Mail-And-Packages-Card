@@ -27,7 +27,7 @@ Displays carrier package counts, delivery status badges, camera feeds, and summa
 ## Requirements
 
 - Home Assistant **2025.5** or newer
-- [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) installed and configured
+- [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) **0.5.1** or newer
 
 ## Installation
 
