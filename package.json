@@ -15,8 +15,8 @@
   "author": "Christopher <christopher@moralmunky.com>",
   "license": "MIT",
   "dependencies": {
-    "custom-card-helpers": "^1.9.0",
-    "lit": "^3.2.0",
+    "custom-card-helpers": "^2.0.0",
+    "lit": "^3.3.3",
     "tslib": "^2.8.0"
   },
   "devDependencies": {
