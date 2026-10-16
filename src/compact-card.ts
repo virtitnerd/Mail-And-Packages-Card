@@ -5,12 +5,10 @@ import type { CSSResultGroup, TemplateResult, PropertyValues } from 'lit';
 import { HomeAssistant, LovelaceCardEditor, fireEvent } from 'custom-card-helpers';
 
 import type { MailAndPackagesCardConfig } from './types';
-import { CARD_VERSION, HACS_FILES_BASE } from './const';
+import { CARD_VERSION } from './const';
 import { CARRIERS } from './carriers';
 import { localize } from './localize/localize';
-import { mailboxBreakdown } from './helpers';
-
-const FALLBACK_IMG = `${HACS_FILES_BASE}/img/square_delivery.png`;
+import { mailboxBreakdown, iconUrl } from './helpers';
 
 (window as any).customCards = (window as any).customCards || [];
 if (!(window as any).customCards.some((c: any) => c.type === 'mailandpackages-compact-card')) {
@@ -76,7 +74,7 @@ export class MailandpackagesCompactCard extends LitElement {
         const s = states[carrierCfg.entity_mail];
         if (s) {
           carrierItems.push({
-            image: `${HACS_FILES_BASE}/img/square_mail.png`,
+            image: `${iconUrl('img/square_mail.png')}`,
             label: 'Mail',
             count: s.state,
             entityId: carrierCfg.entity_mail,
@@ -88,7 +86,7 @@ export class MailandpackagesCompactCard extends LitElement {
         const s = states[carrierCfg.entity_packages];
         if (s) {
           carrierItems.push({
-            image: `${HACS_FILES_BASE}/${carrier.image}`,
+            image: `${iconUrl(carrier.image)}`,
             label: carrier.name,
             count: s.state,
             entityId: carrierCfg.entity_packages,
@@ -115,102 +113,93 @@ export class MailandpackagesCompactCard extends LitElement {
     return html`
       <ha-card class="compact-card" tabindex="0">
         ${cfg.name ? html`<div class="compact-title">${cfg.name}</div>` : ''}
-        ${inTransit || delivering || delivered || uspsMailState
-          ? html`
-              <div class="compact-summary">
-                ${uspsMailState
-                  ? html`
-                      <span class="summary-item">
-                        <img
-                          class="row-icon"
-                          src="${HACS_FILES_BASE}/img/square_mail.png"
-                          alt="Mail"
-                          @error=${this._onImgError}
-                        />
-                        Mail:&nbsp;<strong>${uspsMailState.state}</strong>
-                      </span>
-                    `
-                  : ''}
-                ${inTransit
-                  ? html`
-                      <span class="summary-item" title="${mailboxBreakdown(inTransit).trim()}">
-                        <img
-                          class="row-icon"
-                          src="${HACS_FILES_BASE}/img/square_in-transit.png"
-                          alt="In Transit"
-                          @error=${this._onImgError}
-                        />
-                        In Transit:&nbsp;<strong>${inTransit.state}</strong>
-                      </span>
-                    `
-                  : ''}
-                ${delivering
-                  ? html`
-                      <span class="summary-item" title="${mailboxBreakdown(delivering).trim()}">
-                        <img
-                          class="row-icon"
-                          src="${HACS_FILES_BASE}/img/square_in-transit.png"
-                          alt="${localize('common.delivering')}"
-                          @error=${this._onImgError}
-                        />
-                        ${localize('common.delivering')}:&nbsp;<strong>${delivering.state}</strong>
-                      </span>
-                    `
-                  : ''}
-                ${delivered
-                  ? html`
-                      <span class="summary-item" title="${mailboxBreakdown(delivered).trim()}">
-                        <img
-                          class="row-icon"
-                          src="${HACS_FILES_BASE}/img/square_delivery.png"
-                          alt="Delivered"
-                          @error=${this._onImgError}
-                        />
-                        Delivered:&nbsp;<strong>${delivered.state}</strong>
-                      </span>
-                    `
-                  : ''}
-              </div>
-            `
-          : ''}
+        ${
+          inTransit || delivering || delivered || uspsMailState
+            ? html`
+                <div class="compact-summary">
+                  ${
+                    uspsMailState
+                      ? html`
+                          <span class="summary-item">
+                            <img class="row-icon" src="${iconUrl('img/square_mail.png')}" alt="Mail" />
+                            Mail:&nbsp;<strong>${uspsMailState.state}</strong>
+                          </span>
+                        `
+                      : ''
+                  }
+                  ${
+                    inTransit
+                      ? html`
+                          <span class="summary-item" title="${mailboxBreakdown(inTransit).trim()}">
+                            <img class="row-icon" src="${iconUrl('img/square_in-transit.png')}" alt="In Transit" />
+                            In Transit:&nbsp;<strong>${inTransit.state}</strong>
+                          </span>
+                        `
+                      : ''
+                  }
+                  ${
+                    delivering
+                      ? html`
+                          <span class="summary-item" title="${mailboxBreakdown(delivering).trim()}">
+                            <img
+                              class="row-icon"
+                              src="${iconUrl('img/square_in-transit.png')}"
+                              alt="${localize('common.delivering')}"
+                            />
+                            ${localize('common.delivering')}:&nbsp;<strong>${delivering.state}</strong>
+                          </span>
+                        `
+                      : ''
+                  }
+                  ${
+                    delivered
+                      ? html`
+                          <span class="summary-item" title="${mailboxBreakdown(delivered).trim()}">
+                            <img class="row-icon" src="${iconUrl('img/square_delivery.png')}" alt="Delivered" />
+                            Delivered:&nbsp;<strong>${delivered.state}</strong>
+                          </span>
+                        `
+                      : ''
+                  }
+                </div>
+              `
+            : ''
+        }
         ${deliveryMsg ? html`<div class="compact-message">${deliveryMsg.state}</div>` : ''}
-        ${carrierItems.length > 0
-          ? html`
-              <div class="compact-carriers">
-                ${carrierItems.map(
-                  (item) => html`
-                    <span class="carrier-item" title="${item.label}: ${item.count}">
-                      <img class="row-icon" src="${item.image}" alt="${item.label}" @error=${this._onImgError} />
-                      ${item.label}:&nbsp;<strong>${item.count}</strong>
-                    </span>
-                  `,
-                )}
-              </div>
-            `
-          : ''}
-        ${uspsCameraUrl
-          ? html`
-              <img
-                class="compact-camera"
-                src="${uspsCameraUrl}&interval=30"
-                alt="USPS Informed Delivery"
-                @click=${() => fireEvent(this, 'hass-more-info', { entityId: uspsCfg!.entity_camera! })}
-              />
-            `
-          : ''}
+        ${
+          carrierItems.length > 0
+            ? html`
+                <div class="compact-carriers">
+                  ${carrierItems.map(
+                    (item) => html`
+                      <span class="carrier-item" title="${item.label}: ${item.count}">
+                        <img class="row-icon" src="${item.image}" alt="${item.label}" />
+                        ${item.label}:&nbsp;<strong>${item.count}</strong>
+                      </span>
+                    `,
+                  )}
+                </div>
+              `
+            : ''
+        }
+        ${
+          uspsCameraUrl
+            ? html`
+                <img
+                  class="compact-camera"
+                  src="${uspsCameraUrl}&interval=30"
+                  alt="USPS Informed Delivery"
+                  @click=${() => fireEvent(this, 'hass-more-info', { entityId: uspsCfg!.entity_camera! })}
+                />
+              `
+            : ''
+        }
 
         <div class="compact-footer">
           V&nbsp;${CARD_VERSION}${lastCheck ? html`&nbsp;&nbsp;Checked:&nbsp;${lastCheck}` : ''}
         </div>
       </ha-card>
     `;
-  }
-
-  private _onImgError(ev: Event): void {
-    const img = ev.target as HTMLImageElement;
-    if (!img.src.endsWith(FALLBACK_IMG)) {
-      img.src = FALLBACK_IMG;
-    }
   }
 
   static get styles(): CSSResultGroup {
