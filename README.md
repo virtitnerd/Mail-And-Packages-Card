@@ -41,7 +41,7 @@ Displays carrier package counts, delivery status badges, camera feeds, and summa
 
 ### Manual
 
-Copy `dist/Home-Assistant-Mail-And-Packages-Custom-Card.js` and the `dist/img/` folder to `config/www/`, then add the resource:
+Copy `dist/Home-Assistant-Mail-And-Packages-Custom-Card.js` to `config/www/` (the icons are bundled into this one file), then add the resource:
 
 **Settings → Dashboards → Resources → Add resource**
 ```

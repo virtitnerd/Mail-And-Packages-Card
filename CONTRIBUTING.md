@@ -22,7 +22,8 @@ Every carrier **must** ship with a branded icon. PRs without an icon will not be
 |-------------|-------|
 | Filename | `src/img/square_[carrier-key].png` |
 | Format | PNG |
-| Dimensions | 200 × 200 px minimum (square) |
+| Dimensions | 128 × 128 px (square). Icons render at about 40 px, so larger files only add weight |
+| Size | Keep each file under about 15 KB. Icons are inlined into the card's JavaScript at build time |
 | Style | Carrier logo or wordmark on a solid brand-color background |
 | Shape | Square image — CSS renders it circular with `border-radius: 50%` |
 
