@@ -7,10 +7,10 @@ import { HomeAssistant, LovelaceCardEditor, getLovelace, fireEvent } from 'custo
 import './editor';
 import './compact-card';
 import type { MailAndPackagesCardConfig, CarrierEntityConfig, AmazonOrderDetail } from './types';
-import { CARD_VERSION, HACS_FILES_BASE } from './const';
+import { CARD_VERSION } from './const';
 import { CARRIERS, CarrierDefinition, CarrierSensorType, getCarrierSensorImage } from './carriers';
 import { localize } from './localize/localize';
-import { mailboxBreakdown } from './helpers';
+import { mailboxBreakdown, iconUrl } from './helpers';
 
 /* eslint no-console: 0 */
 console.info(
@@ -26,8 +26,6 @@ console.info(
   preview: true,
   description: 'A custom companion card for the Mail and Packages integration.',
 });
-
-const FALLBACK_IMG = `${HACS_FILES_BASE}/img/square_delivery.png`;
 
 @customElement('mailandpackages-card')
 export class MailandpackagesCard extends LitElement {
@@ -118,70 +116,70 @@ export class MailandpackagesCard extends LitElement {
     if (!inTransit && !delivering && !delivered && !uspsMail) return html``;
     return html`
       <div class="summary-row">
-        ${uspsMail
-          ? html`
-              <div class="summary-badge" title="Mail">
-                <div class="badge-icon-wrap">
-                  <img
-                    class="badge-img"
-                    src="${HACS_FILES_BASE}/img/square_mail.png"
-                    alt="Mail"
-                    @error=${this._onImgError}
-                  />
-                  <span class="badge-count">${uspsMail.state}</span>
+        ${
+          uspsMail
+            ? html`
+                <div class="summary-badge" title="Mail">
+                  <div class="badge-icon-wrap">
+                    <img class="badge-img" src="${iconUrl('img/square_mail.png')}" alt="Mail" />
+                    <span class="badge-count">${uspsMail.state}</span>
+                  </div>
+                  <span class="badge-label">Mail</span>
                 </div>
-                <span class="badge-label">Mail</span>
-              </div>
-            `
-          : ''}
-        ${inTransit
-          ? html`
-              <div class="summary-badge" title="${localize('common.in_transit')}${mailboxBreakdown(inTransit)}">
-                <div class="badge-icon-wrap">
-                  <img
-                    class="badge-img"
-                    src="${HACS_FILES_BASE}/img/square_in-transit.png"
-                    alt="${localize('common.in_transit')}"
-                    @error=${this._onImgError}
-                  />
-                  <span class="badge-count">${inTransit.state}</span>
+              `
+            : ''
+        }
+        ${
+          inTransit
+            ? html`
+                <div class="summary-badge" title="${localize('common.in_transit')}${mailboxBreakdown(inTransit)}">
+                  <div class="badge-icon-wrap">
+                    <img
+                      class="badge-img"
+                      src="${iconUrl('img/square_in-transit.png')}"
+                      alt="${localize('common.in_transit')}"
+                    />
+                    <span class="badge-count">${inTransit.state}</span>
+                  </div>
+                  <span class="badge-label">${localize('common.in_transit')}</span>
                 </div>
-                <span class="badge-label">${localize('common.in_transit')}</span>
-              </div>
-            `
-          : ''}
-        ${delivering
-          ? html`
-              <div class="summary-badge" title="${localize('common.delivering')}${mailboxBreakdown(delivering)}">
-                <div class="badge-icon-wrap">
-                  <img
-                    class="badge-img"
-                    src="${HACS_FILES_BASE}/img/square_in-transit.png"
-                    alt="${localize('common.delivering')}"
-                    @error=${this._onImgError}
-                  />
-                  <span class="badge-count">${delivering.state}</span>
+              `
+            : ''
+        }
+        ${
+          delivering
+            ? html`
+                <div class="summary-badge" title="${localize('common.delivering')}${mailboxBreakdown(delivering)}">
+                  <div class="badge-icon-wrap">
+                    <img
+                      class="badge-img"
+                      src="${iconUrl('img/square_in-transit.png')}"
+                      alt="${localize('common.delivering')}"
+                    />
+                    <span class="badge-count">${delivering.state}</span>
+                  </div>
+                  <span class="badge-label">${localize('common.delivering')}</span>
                 </div>
-                <span class="badge-label">${localize('common.delivering')}</span>
-              </div>
-            `
-          : ''}
-        ${delivered
-          ? html`
-              <div class="summary-badge" title="${localize('common.delivered')}${mailboxBreakdown(delivered)}">
-                <div class="badge-icon-wrap">
-                  <img
-                    class="badge-img"
-                    src="${HACS_FILES_BASE}/img/square_delivery.png"
-                    alt="${localize('common.delivered')}"
-                    @error=${this._onImgError}
-                  />
-                  <span class="badge-count">${delivered.state}</span>
+              `
+            : ''
+        }
+        ${
+          delivered
+            ? html`
+                <div class="summary-badge" title="${localize('common.delivered')}${mailboxBreakdown(delivered)}">
+                  <div class="badge-icon-wrap">
+                    <img
+                      class="badge-img"
+                      src="${iconUrl('img/square_delivery.png')}"
+                      alt="${localize('common.delivered')}"
+                    />
+                    <span class="badge-count">${delivered.state}</span>
+                  </div>
+                  <span class="badge-label">${localize('common.delivered')}</span>
                 </div>
-                <span class="badge-label">${localize('common.delivered')}</span>
-              </div>
-            `
-          : ''}
+              `
+            : ''
+        }
       </div>
     `;
   }
@@ -212,22 +210,26 @@ export class MailandpackagesCard extends LitElement {
     return html`
       <div class="carrier-section">
         <div class="carrier-header">
-          ${headerLink
-            ? html`<a class="carrier-name" href="${headerLink}" target="_blank" rel="noopener noreferrer"
-                >${carrier.name}</a
-              >`
-            : html`<span class="carrier-name">${carrier.name}</span>`}
+          ${
+            headerLink
+              ? html`<a class="carrier-name" href="${headerLink}" target="_blank" rel="noopener noreferrer"
+                  >${carrier.name}</a
+                >`
+              : html`<span class="carrier-name">${carrier.name}</span>`
+          }
         </div>
-        ${showCamera
-          ? html`
-              <img
-                class="delivery-camera"
-                src="${cameraUrl!}&interval=30"
-                alt="${carrier.name} delivery camera"
-                @click=${() => this._showMoreInfo(carrierCfg.entity_camera!)}
-              />
-            `
-          : ''}
+        ${
+          showCamera
+            ? html`
+                <img
+                  class="delivery-camera"
+                  src="${cameraUrl!}&interval=30"
+                  alt="${carrier.name} delivery camera"
+                  @click=${() => this._showMoreInfo(carrierCfg.entity_camera!)}
+                />
+              `
+            : ''
+        }
         <div class="carrier-sensors">
           ${configuredSensors.map((sensor) => this._renderSensorBadge(carrier, sensor, carrierCfg))}
         </div>
@@ -253,16 +255,18 @@ export class MailandpackagesCard extends LitElement {
         ${items.map(
           ([orderId, d]) => html`
             <li class="order-item" title="${orderId}">
-              ${d.image
-                ? html`<img
-                    class="order-thumb"
-                    src="${d.image}"
-                    alt=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer"
-                    @error=${(ev: Event) => ((ev.target as HTMLImageElement).style.display = 'none')}
-                  />`
-                : ''}
+              ${
+                d.image
+                  ? html`<img
+                      class="order-thumb"
+                      src="${d.image}"
+                      alt=""
+                      loading="lazy"
+                      referrerpolicy="no-referrer"
+                      @error=${(ev: Event) => ((ev.target as HTMLImageElement).style.display = 'none')}
+                    />`
+                  : ''
+              }
               <span class="order-name">${d.name || orderId}</span>
             </li>
           `,
@@ -283,12 +287,12 @@ export class MailandpackagesCard extends LitElement {
     if (!entityState) return html``;
 
     const imgPath = getCarrierSensorImage(carrier, sensor.key);
-    const imgSrc = `${HACS_FILES_BASE}/${imgPath}`;
+    const imgSrc = iconUrl(imgPath);
 
     return html`
       <div class="sensor-badge" title="${sensor.label}: ${entityState.state}${mailboxBreakdown(entityState)}">
         <div class="badge-icon-wrap">
-          <img class="badge-img" src="${imgSrc}" alt="${carrier.name} ${sensor.label}" @error=${this._onImgError} />
+          <img class="badge-img" src="${imgSrc}" alt="${carrier.name} ${sensor.label}" />
           <span class="badge-count">${entityState.state}</span>
         </div>
         <span class="badge-label">${sensor.label}</span>
@@ -298,15 +302,6 @@ export class MailandpackagesCard extends LitElement {
 
   private _showMoreInfo(entityId: string): void {
     fireEvent(this, 'hass-more-info', { entityId });
-  }
-
-  private _onImgError(ev: Event): void {
-    const img = ev.target as HTMLImageElement;
-    // img.src is always the resolved absolute URL; FALLBACK_IMG is a root-relative path.
-    // Compare with endsWith so both forms match and we avoid an infinite onerror loop.
-    if (!img.src.endsWith(FALLBACK_IMG)) {
-      img.src = FALLBACK_IMG;
-    }
   }
 
   private _showWarning(warning: string): TemplateResult {

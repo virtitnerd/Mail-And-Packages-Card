@@ -2,7 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
-import copy from 'rollup-plugin-copy';
+import inlineIcons from './build/inline-icons.js';
 import serve from 'rollup-plugin-serve';
 
 export default {
@@ -12,9 +12,7 @@ export default {
     format: 'es',
   },
   plugins: [
-    copy({
-      targets: [{ src: 'src/img/', dest: 'dist/' }],
-    }),
+    inlineIcons(),
     nodeResolve(),
     commonjs(),
     typescript(),
