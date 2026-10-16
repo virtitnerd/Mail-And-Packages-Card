@@ -1,10 +1,10 @@
-# Home-Assistant-Mail-And-Packages-Custom-Card
+# Mail-And-Packages-Card
 
 {% if prerelease %}
 
 ### This is a pre-release version
 
-It may contain bugs or break functionality in addition to adding new features and fixes. Please review open issues and submit new issues to the [GitHub issue tracker](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card/issues).
+It may contain bugs or break functionality in addition to adding new features and fixes. Please review open issues and submit new issues to the [GitHub issue tracker](https://github.com/virtitnerd/Mail-And-Packages-Card/issues).
 
 {% endif %}
 
@@ -33,12 +33,12 @@ This is a complete rewrite. Remove the current card from your dashabord and add 
 
 {% endif %}
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/virtitnerd/Mail-And-Packages-Card)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-![GitHub contributors](https://img.shields.io/github/contributors/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card)
+![GitHub contributors](https://img.shields.io/github/contributors/virtitnerd/Mail-And-Packages-Card)
 ![Maintenance](https://img.shields.io/maintenance/yes/2020)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card)
-![GitHub last commit](https://img.shields.io/github/last-commit/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/virtitnerd/Mail-And-Packages-Card)
+![GitHub last commit](https://img.shields.io/github/last-commit/virtitnerd/Mail-And-Packages-Card)
 
 A Custom Lovelace card to display the [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) sensors.
 
@@ -56,4 +56,4 @@ Edit you dashbaord and choose 'Add card' find the Mail and Packages card from th
 
 Use the visual card editor to turn on the entities that you have chosen to use in the mail and packages integration.
 
-<img src="https://github.com/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card/blob/master/img/card-image.png?raw=true" alt="Preview of card" />
+<img src="https://github.com/virtitnerd/Mail-And-Packages-Card/blob/master/img/card-image-full.png?raw=true" alt="Preview of card" />
