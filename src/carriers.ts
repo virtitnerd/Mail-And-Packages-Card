@@ -205,7 +205,6 @@ export const CARRIERS: CarrierDefinition[] = [
     key: 'post_nl',
     name: 'PostNL',
     image: 'img/square_post_nl.png',
-    exceptionImage: 'img/square_post_nl_exception.png',
     url: 'https://www.postnl.nl',
     sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
   },
@@ -235,7 +234,6 @@ export const CARRIERS: CarrierDefinition[] = [
     key: 'walmart',
     name: 'Walmart',
     image: 'img/square_walmart.png',
-    exceptionImage: 'img/square_walmart_exception.png',
     url: 'https://www.walmart.com',
     sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
     hasCamera: true,
@@ -257,7 +255,7 @@ export const CARRIERS: CarrierDefinition[] = [
   {
     key: 'bonshaw_distribution_network',
     name: 'Bonshaw',
-    image: 'img/square_bonshaw_distribution_network.png',
+    image: 'img/square_delivery.png',
     sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
   },
   {
