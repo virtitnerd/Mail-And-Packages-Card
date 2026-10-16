@@ -2,7 +2,7 @@
 import type { CarrierEntityConfig } from './types';
 
 export interface CarrierSensorType {
-  /** Identifier: 'mail' | 'packages' | 'delivering' | 'delivered' | 'exception' | 'hub' | 'otp' */
+  /** Identifier: 'mail' | 'packages' | 'delivering' | 'delivered' | 'exception' | 'pickup' | 'hub' | 'otp' */
   key: string;
   /** Key in CarrierEntityConfig that holds this sensor's entity ID */
   configKey: keyof CarrierEntityConfig;
@@ -61,6 +61,12 @@ const SENSOR_EXCEPTION: CarrierSensorType = {
   label: 'Exception',
 };
 
+const SENSOR_PICKUP: CarrierSensorType = {
+  key: 'pickup',
+  configKey: 'entity_pickup',
+  label: 'Pickup',
+};
+
 const SENSOR_HUB: CarrierSensorType = {
   key: 'hub',
   configKey: 'entity_hub',
@@ -82,7 +88,7 @@ export const CARRIERS: CarrierDefinition[] = [
     image: 'img/square_usps.png',
     exceptionImage: 'img/square_usps_exception.png',
     url: 'https://informeddelivery.usps.com/',
-    sensors: [SENSOR_MAIL, SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
+    sensors: [SENSOR_MAIL, SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION, SENSOR_PICKUP],
     hasCamera: true,
   },
   {
@@ -99,7 +105,7 @@ export const CARRIERS: CarrierDefinition[] = [
     name: 'FedEx',
     image: 'img/square_fedex.png',
     url: 'https://www.fedex.com/en-us/tracking.html',
-    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
     hasCamera: true,
   },
   {
@@ -208,7 +214,8 @@ export const CARRIERS: CarrierDefinition[] = [
     name: 'Deutsche Post',
     image: 'img/square_post_de.png',
     url: 'https://www.deutschepost.de',
-    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING],
+    sensors: [SENSOR_MAIL, SENSOR_PACKAGES, SENSOR_DELIVERING],
+    hasCamera: true,
   },
   {
     key: 'post_at',
@@ -230,7 +237,7 @@ export const CARRIERS: CarrierDefinition[] = [
     image: 'img/square_walmart.png',
     exceptionImage: 'img/square_walmart_exception.png',
     url: 'https://www.walmart.com',
-    sensors: [SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
     hasCamera: true,
   },
   {

@@ -19,6 +19,8 @@ export interface CarrierEntityConfig {
   entity_delivered?: string;
   /** e.g. sensor.mail_usps_exception */
   entity_exception?: string;
+  /** USPS only: sensor.mail_usps_scheduled_pickup */
+  entity_pickup?: string;
   /** Amazon Hub only: sensor.mail_amazon_hub_packages */
   entity_hub?: string;
   /** Amazon OTP only: sensor.mail_amazon_otp */
