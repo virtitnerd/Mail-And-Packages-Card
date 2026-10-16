@@ -3,33 +3,11 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
-    target-branch: "dev"
     schedule:
       interval: "weekly"
-    groups:
-      # Each group lands as one PR so the toolchain moves together.
-      rollup:
-        patterns:
-          - "rollup"
-          - "rollup-plugin-*"
-          - "@rollup/*"
-      lint:
-        patterns:
-          - "eslint"
-          - "eslint-*"
-          - "@typescript-eslint/*"
-          - "prettier"
-          - "lint-staged"
-          - "husky"
-      runtime:
-        patterns:
-          - "lit"
-          - "custom-card-helpers"
-          - "tslib"
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "dev"
     schedule:
       interval: "weekly"
     groups:
