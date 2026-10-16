@@ -1,6 +1,8 @@
-# Home-Assistant-Mail-And-Packages-Custom-Card
+# Mail-And-Packages-Card
 
 A custom Lovelace card for the [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) for Home Assistant.
+
+> **Project history:** this began as [moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card), which has had no commits since 2021. It has since been rewritten (Lit 3, a per-carrier registry, a visual editor, a compact card) and is maintained here as an independent repository. The full original commit history is preserved. Issues and pull requests belong here.
 
 Displays carrier package counts, delivery status badges, camera feeds, and summary totals — all configurable through the visual editor or YAML.
 
@@ -19,7 +21,7 @@ Displays carrier package counts, delivery status badges, camera feeds, and summa
 
 - [@moralmunky](https://github.com/moralmunky) — Original author
 - [@firstof9](https://github.com/firstof9) — Major contributions and long-term maintenance
-- [@virtitnerd](https://github.com/virtitnerd) — Full rewrite: Lit 3.x, 27-carrier registry, per-carrier sensor types, modern visual editor, camera conditional display
+- [@virtitnerd](https://github.com/virtitnerd) — Full rewrite: Lit 3.x, 43-carrier registry, per-carrier sensor types, modern visual editor, camera conditional display
 - [@brandon-claps](https://github.com/brandon-claps) — Additional carrier icons
   <br/>
   <a href="https://www.buymeacoffee.com/Moralmunky" target="_blank"><img src="/docs/coffee.png" alt="Buy Us A Coffee" height="51px" width="217px" /></a>
@@ -36,7 +38,7 @@ Displays carrier package counts, delivery status badges, camera feeds, and summa
 1. Have [HACS](https://hacs.xyz) installed
 2. Go to **HACS → Frontend**
 3. Click the three-dot menu → **Custom repositories**
-4. Add `https://github.com/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card` with type **Dashboard**
+4. Add `https://github.com/virtitnerd/Mail-And-Packages-Card` with type **Dashboard**
 5. Search for "Mail and Packages" and install
 6. Clear your browser cache
 
@@ -143,6 +145,7 @@ carriers:
 | `name` | string | Card title shown in the header |
 | `entity_mail_updated` | entity ID | Sensor whose state is the last-check timestamp |
 | `entity_packages_in_transit` | entity ID | Aggregate in-transit count sensor |
+| `entity_packages_delivering` | entity ID | Aggregate out-for-delivery count sensor |
 | `entity_packages_delivered` | entity ID | Aggregate delivered count sensor |
 | `entity_delivery_message` | entity ID | Any text sensor displayed as a delivery summary |
 
@@ -157,11 +160,13 @@ All fields are optional. Omit any sensor you don't want displayed.
 | `entity_delivering` | entity ID | Out-for-delivery count |
 | `entity_delivered` | entity ID | Delivered count |
 | `entity_exception` | entity ID | Exception/problem count |
+| `entity_pickup` | entity ID | Scheduled pickup count (USPS only) |
 | `entity_hub` | entity ID | Hub Locker count (Amazon only) |
 | `entity_otp` | entity ID | OTP code sensor (Amazon only) |
 | `entity_camera` | entity ID | Delivery photo camera entity |
 | `camera_only_when_delivered` | boolean | Show camera only when `entity_delivered` > 0 |
 | `amazon_url` | string | Custom URL for the Amazon header link |
+| `hide_order_details` | boolean | Hide the Amazon in-transit item list (Amazon only) |
 
 ## Supported Carriers
 
@@ -181,21 +186,44 @@ All fields are optional. Omit any sensor you don't want displayed.
 | DPD | `dpd` | ✓ |
 | DPD Poland | `dpd_com_pl` | ✓ (shared DPD icon) |
 | DPD Netherlands | `dpd_nl` | ✓ (shared DPD icon) |
-| Evri | `evri` | fallback |
-| DHL Parcel NL | `dhl_parcel_nl` | fallback |
-| PostNL | `post_nl` | fallback |
-| Deutsche Post | `post_de` | fallback |
-| Post Austria | `post_at` | fallback |
+| DPD UK | `dpd_uk` | ✓ (shared DPD icon) |
+| Evri | `evri` | ✓ |
+| DHL Parcel NL | `dhl_parcel_nl` | ✓ |
+| PostNL | `post_nl` | ✓ |
+| Deutsche Post | `post_de` | ✓ |
+| Post Austria | `post_at` | ✓ |
 | Poczta Polska | `poczta_polska` | ✓ |
-| bol.com | `bolcom` | fallback |
-| Walmart | `walmart` | fallback |
-| Purolator | `purolator` | fallback |
-| Intelcom | `intelcom` | fallback |
+| bpost | `bpost` | ✓ |
+| Mondial Relay | `mondial_relay` | ✓ |
+| PostNord | `postnord` | ✓ |
+| Bring | `bring` | ✓ |
+| DAO | `dao` | ✓ |
+| Budbee | `budbee` | ✓ |
+| Airmee | `airmee` | ✓ |
+| Burd | `burd` | ✓ |
+| DB Schenker | `db_schenker` | ✓ |
+| Vinted Go | `vinted_go` | ✓ |
+| bol.com | `bolcom` | ✓ |
+| Walmart | `walmart` | ✓ |
+| Home Depot | `home_depot` | ✓ |
+| Purolator | `purolator` | ✓ |
+| Intelcom | `intelcom` | ✓ |
+| AliExpress | `aliexpress` | ✓ |
+| Etsy | `etsy` | ✓ |
+| Shopify | `shopify` | ✓ |
+| ButcherBox | `butcherbox` | ✓ |
+| BuildingLink | `buildinglink` | ✓ |
+| Rewe Lieferservice | `rewe_lieferservice` | ✓ |
 | Bonshaw | `bonshaw_distribution_network` | fallback |
-| BuildingLink | `buildinglink` | fallback |
-| Rewe Lieferservice | `rewe_lieferservice` | fallback |
 
 Carriers marked "fallback" display a generic delivery icon. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute a branded icon.
+
+Carrier logos are trademarks of their respective owners and are used here only to identify each carrier.
+
+## Amazon Items and the All Mailboxes Summary
+
+- **Amazon items** — when the Amazon Packages sensor carries the `order_details` attribute (integration versions that expose per-order item names and product images), the Amazon section lists each in-transit item with its thumbnail. Set `hide_order_details: true` on the `amazon` carrier to turn this off.
+- **All mailboxes summary** — with two or more mailboxes the integration can create combined sensors that count each package once. Point the card's summary and carrier entities at those sensors as usual; hovering a badge lists the per-mailbox counts.
 
 ## Delivery Message Sensor
 
@@ -207,7 +235,6 @@ The delivery message sensor is **not** created by the integration — it must be
 npm install       # install dependencies
 npm run build     # lint + build to dist/
 npm start         # watch mode with dev server (port 5000)
-npm test          # run test suite (Playwright/Chromium)
 ```
 
-Stack: Lit 3.x · TypeScript 5.x · Rollup 4.x · Web Test Runner
+Stack: Lit 3.x · TypeScript 5.x · Rollup 4.x

@@ -6,10 +6,11 @@ import { HomeAssistant, LovelaceCardEditor, getLovelace, fireEvent } from 'custo
 
 import './editor';
 import './compact-card';
-import type { MailAndPackagesCardConfig, CarrierEntityConfig } from './types';
+import type { MailAndPackagesCardConfig, CarrierEntityConfig, AmazonOrderDetail } from './types';
 import { CARD_VERSION, HACS_FILES_BASE } from './const';
 import { CARRIERS, CarrierDefinition, CarrierSensorType, getCarrierSensorImage } from './carriers';
 import { localize } from './localize/localize';
+import { mailboxBreakdown } from './helpers';
 
 /* eslint no-console: 0 */
 console.info(
@@ -70,6 +71,10 @@ export class MailandpackagesCard extends LitElement {
       ? this.hass.states[this.config.entity_packages_in_transit]
       : undefined;
 
+    const delivering = this.config.entity_packages_delivering
+      ? this.hass.states[this.config.entity_packages_delivering]
+      : undefined;
+
     const delivered = this.config.entity_packages_delivered
       ? this.hass.states[this.config.entity_packages_delivered]
       : undefined;
@@ -84,7 +89,7 @@ export class MailandpackagesCard extends LitElement {
 
     return html`
       <ha-card class="mail-and-packages" tabindex="0">
-        ${this._renderHeader(mailUpdated)} ${this._renderSummary(inTransit, delivered, uspsMail)}
+        ${this._renderHeader(mailUpdated)} ${this._renderSummary(inTransit, delivering, delivered, uspsMail)}
         ${deliveryMsg ? html`<p class="delivery-message">${deliveryMsg.state}</p>` : ''}
         <div class="carriers">${CARRIERS.map((carrier) => this._renderCarrier(carrier, carriers[carrier.key]))}</div>
       </ha-card>
@@ -109,8 +114,8 @@ export class MailandpackagesCard extends LitElement {
     `;
   }
 
-  private _renderSummary(inTransit: any, delivered: any, uspsMail?: any): TemplateResult {
-    if (!inTransit && !delivered && !uspsMail) return html``;
+  private _renderSummary(inTransit: any, delivering: any, delivered: any, uspsMail?: any): TemplateResult {
+    if (!inTransit && !delivering && !delivered && !uspsMail) return html``;
     return html`
       <div class="summary-row">
         ${uspsMail
@@ -131,7 +136,7 @@ export class MailandpackagesCard extends LitElement {
           : ''}
         ${inTransit
           ? html`
-              <div class="summary-badge" title="${localize('common.in_transit')}">
+              <div class="summary-badge" title="${localize('common.in_transit')}${mailboxBreakdown(inTransit)}">
                 <div class="badge-icon-wrap">
                   <img
                     class="badge-img"
@@ -145,9 +150,25 @@ export class MailandpackagesCard extends LitElement {
               </div>
             `
           : ''}
+        ${delivering
+          ? html`
+              <div class="summary-badge" title="${localize('common.delivering')}${mailboxBreakdown(delivering)}">
+                <div class="badge-icon-wrap">
+                  <img
+                    class="badge-img"
+                    src="${HACS_FILES_BASE}/img/square_in-transit.png"
+                    alt="${localize('common.delivering')}"
+                    @error=${this._onImgError}
+                  />
+                  <span class="badge-count">${delivering.state}</span>
+                </div>
+                <span class="badge-label">${localize('common.delivering')}</span>
+              </div>
+            `
+          : ''}
         ${delivered
           ? html`
-              <div class="summary-badge" title="${localize('common.delivered')}">
+              <div class="summary-badge" title="${localize('common.delivered')}${mailboxBreakdown(delivered)}">
                 <div class="badge-icon-wrap">
                   <img
                     class="badge-img"
@@ -210,7 +231,43 @@ export class MailandpackagesCard extends LitElement {
         <div class="carrier-sensors">
           ${configuredSensors.map((sensor) => this._renderSensorBadge(carrier, sensor, carrierCfg))}
         </div>
+        ${carrier.key === 'amazon' ? this._renderAmazonItems(carrierCfg) : ''}
       </div>
+    `;
+  }
+
+  /** In-transit Amazon items from the Packages sensor's order_details attribute ({order: {name, image}}). */
+  private _renderAmazonItems(carrierCfg: CarrierEntityConfig): TemplateResult {
+    if (carrierCfg.hide_order_details || !carrierCfg.entity_packages) return html``;
+
+    const details = this.hass.states[carrierCfg.entity_packages]?.attributes?.order_details;
+    if (!details || typeof details !== 'object') return html``;
+
+    const items = Object.entries(details as Record<string, AmazonOrderDetail>).filter(
+      ([, d]) => d && (d.name || d.image),
+    );
+    if (items.length === 0) return html``;
+
+    return html`
+      <ul class="order-items">
+        ${items.map(
+          ([orderId, d]) => html`
+            <li class="order-item" title="${orderId}">
+              ${d.image
+                ? html`<img
+                    class="order-thumb"
+                    src="${d.image}"
+                    alt=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer"
+                    @error=${(ev: Event) => ((ev.target as HTMLImageElement).style.display = 'none')}
+                  />`
+                : ''}
+              <span class="order-name">${d.name || orderId}</span>
+            </li>
+          `,
+        )}
+      </ul>
     `;
   }
 
@@ -229,7 +286,7 @@ export class MailandpackagesCard extends LitElement {
     const imgSrc = `${HACS_FILES_BASE}/${imgPath}`;
 
     return html`
-      <div class="sensor-badge" title="${sensor.label}: ${entityState.state}">
+      <div class="sensor-badge" title="${sensor.label}: ${entityState.state}${mailboxBreakdown(entityState)}">
         <div class="badge-icon-wrap">
           <img class="badge-img" src="${imgSrc}" alt="${carrier.name} ${sensor.label}" @error=${this._onImgError} />
           <span class="badge-count">${entityState.state}</span>
@@ -335,6 +392,41 @@ export class MailandpackagesCard extends LitElement {
         margin-bottom: 8px;
         cursor: pointer;
         display: block;
+      }
+
+      /* ── Amazon in-transit items ── */
+      .order-items {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .order-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .order-thumb {
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        object-fit: contain;
+        border-radius: 4px;
+        background: #fff;
+      }
+
+      .order-name {
+        font-size: 0.85rem;
+        color: var(--primary-text-color);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
       }
 
       /* ── Sensor badges row ── */

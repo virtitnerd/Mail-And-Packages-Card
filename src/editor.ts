@@ -164,7 +164,20 @@ export class MailandpackagesCardEditor extends LitElement implements LovelaceCar
           )
         : html``;
 
-    return html` ${sensorPickers} ${cameraPicker} ${cameraConditional} ${amazonUrl} `;
+    const orderDetailsToggle =
+      carrier.key === 'amazon'
+        ? html`
+            <ha-formfield label="Hide in-transit item list">
+              <ha-switch
+                .checked=${cfg.hide_order_details ?? false}
+                @change=${(e: Event) =>
+                  this._setCarrierBoolean(carrier.key, 'hide_order_details', (e.target as HTMLInputElement).checked)}
+              ></ha-switch>
+            </ha-formfield>
+          `
+        : html``;
+
+    return html` ${sensorPickers} ${cameraPicker} ${cameraConditional} ${amazonUrl} ${orderDetailsToggle} `;
   }
 
   // ── Main render ───────────────────────────────────────────────────────────
@@ -197,6 +210,9 @@ export class MailandpackagesCardEditor extends LitElement implements LovelaceCar
           html`
             ${this._entityPicker('Packages In Transit', cfg.entity_packages_in_transit, ['sensor'], (v) =>
               this._setTopLevel('entity_packages_in_transit', v),
+            )}
+            ${this._entityPicker('Packages Delivering', cfg.entity_packages_delivering, ['sensor'], (v) =>
+              this._setTopLevel('entity_packages_delivering', v),
             )}
             ${this._entityPicker('Packages Delivered', cfg.entity_packages_delivered, ['sensor'], (v) =>
               this._setTopLevel('entity_packages_delivered', v),
