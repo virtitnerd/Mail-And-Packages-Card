@@ -7,6 +7,7 @@
     "show_error": "Show Error",
     "last_check": "Last Check",
     "in_transit": "In Transit",
+    "delivering": "Out for Delivery",
     "delivered": "Delivered"
   }
 }
