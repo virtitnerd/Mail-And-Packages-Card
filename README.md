@@ -23,8 +23,6 @@ Displays carrier package counts, delivery status badges, camera feeds, and summa
 - [@firstof9](https://github.com/firstof9) — Major contributions and long-term maintenance
 - [@virtitnerd](https://github.com/virtitnerd) — Full rewrite: Lit 3.x, 43-carrier registry, per-carrier sensor types, modern visual editor, camera conditional display
 - [@brandon-claps](https://github.com/brandon-claps) — Additional carrier icons
-  <br/>
-  <a href="https://www.buymeacoffee.com/Moralmunky" target="_blank"><img src="/docs/coffee.png" alt="Buy Us A Coffee" height="51px" width="217px" /></a>
 
 ## Requirements
 
