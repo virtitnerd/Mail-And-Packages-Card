@@ -8,6 +8,7 @@ import type { MailAndPackagesCardConfig } from './types';
 import { CARD_VERSION, HACS_FILES_BASE } from './const';
 import { CARRIERS } from './carriers';
 import { localize } from './localize/localize';
+import { mailboxBreakdown } from './helpers';
 
 const FALLBACK_IMG = `${HACS_FILES_BASE}/img/square_delivery.png`;
 
@@ -54,6 +55,7 @@ export class MailandpackagesCompactCard extends LitElement {
 
     const mailUpdated = cfg.entity_mail_updated ? states[cfg.entity_mail_updated] : undefined;
     const inTransit = cfg.entity_packages_in_transit ? states[cfg.entity_packages_in_transit] : undefined;
+    const delivering = cfg.entity_packages_delivering ? states[cfg.entity_packages_delivering] : undefined;
     const delivered = cfg.entity_packages_delivered ? states[cfg.entity_packages_delivered] : undefined;
     const deliveryMsg = cfg.entity_delivery_message ? states[cfg.entity_delivery_message] : undefined;
     const carriers = cfg.carriers || {};
@@ -113,7 +115,7 @@ export class MailandpackagesCompactCard extends LitElement {
     return html`
       <ha-card class="compact-card" tabindex="0">
         ${cfg.name ? html`<div class="compact-title">${cfg.name}</div>` : ''}
-        ${inTransit || delivered || uspsMailState
+        ${inTransit || delivering || delivered || uspsMailState
           ? html`
               <div class="compact-summary">
                 ${uspsMailState
@@ -131,7 +133,7 @@ export class MailandpackagesCompactCard extends LitElement {
                   : ''}
                 ${inTransit
                   ? html`
-                      <span class="summary-item">
+                      <span class="summary-item" title="${mailboxBreakdown(inTransit).trim()}">
                         <img
                           class="row-icon"
                           src="${HACS_FILES_BASE}/img/square_in-transit.png"
@@ -142,9 +144,22 @@ export class MailandpackagesCompactCard extends LitElement {
                       </span>
                     `
                   : ''}
+                ${delivering
+                  ? html`
+                      <span class="summary-item" title="${mailboxBreakdown(delivering).trim()}">
+                        <img
+                          class="row-icon"
+                          src="${HACS_FILES_BASE}/img/square_in-transit.png"
+                          alt="${localize('common.delivering')}"
+                          @error=${this._onImgError}
+                        />
+                        ${localize('common.delivering')}:&nbsp;<strong>${delivering.state}</strong>
+                      </span>
+                    `
+                  : ''}
                 ${delivered
                   ? html`
-                      <span class="summary-item">
+                      <span class="summary-item" title="${mailboxBreakdown(delivered).trim()}">
                         <img
                           class="row-icon"
                           src="${HACS_FILES_BASE}/img/square_delivery.png"
