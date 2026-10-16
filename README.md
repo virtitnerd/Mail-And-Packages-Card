@@ -1,6 +1,8 @@
-# Home-Assistant-Mail-And-Packages-Custom-Card
+# Mail-And-Packages-Card
 
 A custom Lovelace card for the [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) for Home Assistant.
+
+> **Project history:** this began as [moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card), which has had no commits since 2021. It has since been rewritten (Lit 3, a per-carrier registry, a visual editor, a compact card) and is maintained here as an independent repository. The full original commit history is preserved. Issues and pull requests belong here.
 
 Displays carrier package counts, delivery status badges, camera feeds, and summary totals — all configurable through the visual editor or YAML.
 
@@ -36,7 +38,7 @@ Displays carrier package counts, delivery status badges, camera feeds, and summa
 1. Have [HACS](https://hacs.xyz) installed
 2. Go to **HACS → Frontend**
 3. Click the three-dot menu → **Custom repositories**
-4. Add `https://github.com/moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card` with type **Dashboard**
+4. Add `https://github.com/virtitnerd/Mail-And-Packages-Card` with type **Dashboard**
 5. Search for "Mail and Packages" and install
 6. Clear your browser cache
 
