@@ -2,7 +2,7 @@
 import type { CarrierEntityConfig } from './types';
 
 export interface CarrierSensorType {
-  /** Identifier: 'mail' | 'packages' | 'delivering' | 'delivered' | 'exception' | 'hub' | 'otp' */
+  /** Identifier: 'mail' | 'packages' | 'delivering' | 'delivered' | 'exception' | 'pickup' | 'hub' | 'otp' */
   key: string;
   /** Key in CarrierEntityConfig that holds this sensor's entity ID */
   configKey: keyof CarrierEntityConfig;
@@ -61,6 +61,12 @@ const SENSOR_EXCEPTION: CarrierSensorType = {
   label: 'Exception',
 };
 
+const SENSOR_PICKUP: CarrierSensorType = {
+  key: 'pickup',
+  configKey: 'entity_pickup',
+  label: 'Pickup',
+};
+
 const SENSOR_HUB: CarrierSensorType = {
   key: 'hub',
   configKey: 'entity_hub',
@@ -82,7 +88,7 @@ export const CARRIERS: CarrierDefinition[] = [
     image: 'img/square_usps.png',
     exceptionImage: 'img/square_usps_exception.png',
     url: 'https://informeddelivery.usps.com/',
-    sensors: [SENSOR_MAIL, SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
+    sensors: [SENSOR_MAIL, SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION, SENSOR_PICKUP],
     hasCamera: true,
   },
   {
@@ -99,7 +105,7 @@ export const CARRIERS: CarrierDefinition[] = [
     name: 'FedEx',
     image: 'img/square_fedex.png',
     url: 'https://www.fedex.com/en-us/tracking.html',
-    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
     hasCamera: true,
   },
   {
@@ -199,7 +205,6 @@ export const CARRIERS: CarrierDefinition[] = [
     key: 'post_nl',
     name: 'PostNL',
     image: 'img/square_post_nl.png',
-    exceptionImage: 'img/square_post_nl_exception.png',
     url: 'https://www.postnl.nl',
     sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
   },
@@ -208,7 +213,8 @@ export const CARRIERS: CarrierDefinition[] = [
     name: 'Deutsche Post',
     image: 'img/square_post_de.png',
     url: 'https://www.deutschepost.de',
-    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING],
+    sensors: [SENSOR_MAIL, SENSOR_PACKAGES, SENSOR_DELIVERING],
+    hasCamera: true,
   },
   {
     key: 'post_at',
@@ -228,9 +234,8 @@ export const CARRIERS: CarrierDefinition[] = [
     key: 'walmart',
     name: 'Walmart',
     image: 'img/square_walmart.png',
-    exceptionImage: 'img/square_walmart_exception.png',
     url: 'https://www.walmart.com',
-    sensors: [SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
     hasCamera: true,
   },
   {
@@ -250,7 +255,7 @@ export const CARRIERS: CarrierDefinition[] = [
   {
     key: 'bonshaw_distribution_network',
     name: 'Bonshaw',
-    image: 'img/square_bonshaw_distribution_network.png',
+    image: 'img/square_delivery.png',
     sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
   },
   {
@@ -271,6 +276,120 @@ export const CARRIERS: CarrierDefinition[] = [
     name: 'Rewe Lieferservice',
     image: 'img/square_rewe_lieferservice.png',
     url: 'https://www.rewe.de/service/lieferservice',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'aliexpress',
+    name: 'AliExpress',
+    image: 'img/square_aliexpress.png',
+    url: 'https://www.aliexpress.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'home_depot',
+    name: 'Home Depot',
+    image: 'img/square_home_depot.png',
+    url: 'https://www.homedepot.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED, SENSOR_EXCEPTION],
+    hasCamera: true,
+  },
+  {
+    key: 'shopify',
+    name: 'Shopify',
+    image: 'img/square_shopify.png',
+    url: 'https://shop.app',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'butcherbox',
+    name: 'ButcherBox',
+    image: 'img/square_butcherbox.png',
+    url: 'https://www.butcherbox.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+    hasCamera: true,
+  },
+  {
+    key: 'etsy',
+    name: 'Etsy',
+    image: 'img/square_etsy.png',
+    url: 'https://www.etsy.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'dpd_uk',
+    name: 'DPD UK',
+    image: 'img/square_dpd.png',
+    url: 'https://www.dpd.co.uk',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'dao',
+    name: 'DAO',
+    image: 'img/square_dao.png',
+    url: 'https://www.dao.as',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'budbee',
+    name: 'Budbee',
+    image: 'img/square_budbee.png',
+    url: 'https://www.budbee.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'airmee',
+    name: 'Airmee',
+    image: 'img/square_airmee.png',
+    url: 'https://www.airmee.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'burd',
+    name: 'Burd',
+    image: 'img/square_burd.png',
+    url: 'https://burd.dk',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'postnord',
+    name: 'PostNord',
+    image: 'img/square_postnord.png',
+    url: 'https://www.postnord.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'bring',
+    name: 'Bring',
+    image: 'img/square_bring.png',
+    url: 'https://www.bring.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'db_schenker',
+    name: 'DB Schenker',
+    image: 'img/square_db_schenker.png',
+    url: 'https://www.dbschenker.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'vinted_go',
+    name: 'Vinted Go',
+    image: 'img/square_vinted_go.png',
+    url: 'https://www.vinted.com',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'mondial_relay',
+    name: 'Mondial Relay',
+    image: 'img/square_mondial_relay.png',
+    url: 'https://www.mondialrelay.fr',
+    sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
+  },
+  {
+    key: 'bpost',
+    name: 'bpost',
+    image: 'img/square_bpost.png',
+    url: 'https://www.bpost.be',
     sensors: [SENSOR_PACKAGES, SENSOR_DELIVERING, SENSOR_DELIVERED],
   },
 ];

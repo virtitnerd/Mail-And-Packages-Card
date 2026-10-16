@@ -1,0 +1,33 @@
+name: Validate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      - dev
+      - master
+  pull_request:
+    branches:
+      - dev
+      - master
+
+permissions: {}
+
+jobs:
+  hacs: # https://github.com/hacs/action
+    name: HACS validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Run HACS validation
+        uses: hacs/action@d556e736723344f83838d08488c983a15381059a # 22.5.0
+        with:
+          category: plugin

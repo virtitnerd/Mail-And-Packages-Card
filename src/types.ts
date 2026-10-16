@@ -19,6 +19,8 @@ export interface CarrierEntityConfig {
   entity_delivered?: string;
   /** e.g. sensor.mail_usps_exception */
   entity_exception?: string;
+  /** USPS only: sensor.mail_usps_scheduled_pickup */
+  entity_pickup?: string;
   /** Amazon Hub only: sensor.mail_amazon_hub_packages */
   entity_hub?: string;
   /** Amazon OTP only: sensor.mail_amazon_otp */
@@ -29,6 +31,14 @@ export interface CarrierEntityConfig {
   camera_only_when_delivered?: boolean;
   /** Amazon-specific: URL to open when the Amazon header is clicked */
   amazon_url?: string;
+  /** Amazon-specific: hide the in-transit item list built from the packages sensor's order_details attribute */
+  hide_order_details?: boolean;
+}
+
+/** One entry of the Amazon Packages sensor's `order_details` attribute, keyed by order number. */
+export interface AmazonOrderDetail {
+  name?: string;
+  image?: string;
 }
 
 export interface MailAndPackagesCardConfig extends LovelaceCardConfig {
@@ -42,6 +52,8 @@ export interface MailAndPackagesCardConfig extends LovelaceCardConfig {
   entity_packages_in_transit?: string;
   /** sensor.mail_packages_delivered — aggregate delivered total */
   entity_packages_delivered?: string;
+  /** sensor.mail_packages_delivering — aggregate out-for-delivery total */
+  entity_packages_delivering?: string;
   /** Any text sensor whose state is shown as a delivery summary message */
   entity_delivery_message?: string;
 

@@ -11,7 +11,7 @@
   ],
   "type": "module",
   "module": "Home-Assistant-Mail-And-Packages-Custom-Card.js",
-  "repository": "git@github.com:moralmunky/Home-Assistant-Mail-And-Packages-Custom-Card.git",
+  "repository": "git@github.com:virtitnerd/Mail-And-Packages-Card.git",
   "author": "Christopher <christopher@moralmunky.com>",
   "license": "MIT",
   "dependencies": {
