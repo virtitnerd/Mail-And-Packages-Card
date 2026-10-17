@@ -9,6 +9,11 @@ import { CARD_VERSION } from './const';
 import { CARRIERS, CarrierDefinition, CarrierSensorType } from './carriers';
 import { localize } from './localize/localize';
 
+/** The editor lists carriers A to Z; the card itself keeps the registry's display order. */
+const CARRIERS_ALPHABETICAL = [...CARRIERS].sort((a, b) =>
+  a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+);
+
 @customElement('mailandpackages-card-editor')
 export class MailandpackagesCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
@@ -228,7 +233,7 @@ export class MailandpackagesCardEditor extends LitElement implements LovelaceCar
 
         <div class="section-group-label">Carriers</div>
 
-        ${CARRIERS.map((carrier) =>
+        ${CARRIERS_ALPHABETICAL.map((carrier) =>
           this._renderSection(`carrier_${carrier.key}`, carrier.name, this._renderCarrierBody(carrier)),
         )}
       </div>
