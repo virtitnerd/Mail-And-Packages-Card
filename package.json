@@ -35,7 +35,7 @@
     "prettier": "^3.9.10",
     "rollup": "^4.67.4",
     "rollup-plugin-serve": "^3.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",
