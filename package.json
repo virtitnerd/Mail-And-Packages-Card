@@ -32,7 +32,7 @@
     "eslint-plugin-prettier": "^5.5.7",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.1",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.1",
     "rollup": "^4.68.2",
     "rollup-plugin-serve": "^3.0.0",
     "typescript": "^6.0.3"
